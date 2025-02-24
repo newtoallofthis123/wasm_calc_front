@@ -16,7 +16,7 @@ function App() {
   async function submit() {
     // request to "192.168.0.128/generate" with a text/plain body
     const res = await fetch(
-      "https://wa-some-back-ishan.onrender.com/generate",
+      "https://wasomeback-production.up.railway.app/generate",
       {
         method: "POST",
         headers: {
@@ -108,12 +108,12 @@ function App() {
           />
           <button onClick={submit}>Submit</button>
           <p>Responses are inaccurate for spheres and complex shapes.</p>
-          <pre>
-            // Vertex:
+          <code>
+            <pre>Vertex Shader:</pre>
             {vertex}
-            // Fragment:
+            <pre>Fragment Shader:</pre>
             {fragment}
-          </pre>
+          </code>
           <WebGLScene
             key={`${vertex}-${fragment}`}
             vertShader={vertex}
