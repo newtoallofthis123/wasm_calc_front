@@ -1,39 +1,42 @@
-import { useState, useEffect } from 'react';
-import './App.css';
-import init, { evaluate } from './wasm/pkg/rust_calculator';
-import WebGLScene from './gl_loader';
+import { useState, useEffect } from "react";
+import "./App.css";
+import init, { evaluate } from "./wasm/pkg/rust_calculator";
+import WebGLScene from "./gl_loader";
 
 function App() {
-  const [expression, setExpression] = useState('23 + 8');
-  const [result, setResult] = useState('');
-  const [error, setError] = useState('');
+  const [expression, setExpression] = useState("23 + 8");
+  const [result, setResult] = useState("");
+  const [error, setError] = useState("");
   const [wasmReady, setWasmReady] = useState(false);
   const [tab, setTab] = useState(0);
   const [vertex, setVertex] = useState(
-    'void main() {gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);}'
+    "void main() {gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);}",
   );
   const [fragment, setFragment] = useState(
-    'void main() {gl_FragColor = vec4(0.0, 0.0, 1.0, 1.0);}'
+    "void main() {gl_FragColor = vec4(0.0, 0.0, 1.0, 1.0);}",
   );
-  const [input, setInput] = useState('');
+  const [input, setInput] = useState("");
 
   async function submit() {
     // request to "192.168.0.128/generate" with a text/plain body
-    const res = await fetch('http://192.168.0.128:4000/generate', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'text/plain',
+    const res = await fetch(
+      "https://wa-some-back-ishan.onrender.com/generate",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "text/plain",
+        },
+        body: input,
       },
-      body: input,
-    }).catch((err) => console.error(err));
+    ).catch((err) => console.error(err));
     console.log(res);
     const jRes = await res.json();
     const modelRes = JSON.parse(
-      jRes['candidates'][0]['content']['parts'][0]['text']
+      jRes["candidates"][0]["content"]["parts"][0]["text"],
     );
     console.log(modelRes);
-    setVertex(modelRes['vertex']);
-    setFragment(modelRes['frag']);
+    setVertex(modelRes["vertex"]);
+    setFragment(modelRes["frag"]);
     console.log(vertex, fragment);
   }
 
@@ -43,8 +46,8 @@ function App() {
         await init();
         setWasmReady(true);
       } catch (e) {
-        console.error('Failed to initialize WASM:', e);
-        setError('Failed to initialize WASM.');
+        console.error("Failed to initialize WASM:", e);
+        setError("Failed to initialize WASM.");
       }
     };
 
@@ -53,23 +56,23 @@ function App() {
 
   const calculate = () => {
     if (!wasmReady) {
-      setError('WASM is still loading.');
+      setError("WASM is still loading.");
       return;
     }
 
     try {
       const res = evaluate(expression);
-      if (typeof res === 'string' && res.startsWith('Err')) {
+      if (typeof res === "string" && res.startsWith("Err")) {
         setError(res);
-        setResult('');
+        setResult("");
       } else {
         setResult(res);
-        setError('');
+        setError("");
       }
     } catch (e) {
-      console.error('Error calculating expression:', e);
-      setError('Error calculating expression.');
-      setResult('');
+      console.error("Error calculating expression:", e);
+      setError("Error calculating expression.");
+      setResult("");
     }
   };
 
@@ -90,7 +93,7 @@ function App() {
                 onChange={(e) => setExpression(e.target.value)}
               />
               <button onClick={calculate}>Calculate</button>
-              {error && <p style={{ color: 'red' }}>Error: {error}</p>}
+              {error && <p style={{ color: "red" }}>Error: {error}</p>}
               {result && <p>Result: {result}</p>}
             </>
           ) : (
@@ -112,6 +115,7 @@ function App() {
           />
         </div>
       )}
+      Made by <a href="https://noobscience.in">NoobScience</a> for InVideo
     </div>
   );
 }
