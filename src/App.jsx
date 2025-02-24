@@ -15,6 +15,28 @@ function App() {
   const [fragment, setFragment] = useState(
     'void main() {gl_FragColor = vec4(0.0, 0.0, 1.0, 1.0);}'
   );
+  const [input, setInput] = useState('');
+
+  async function submit() {
+    // request to "192.168.0.128/generate" with a text/plain body
+    const res = await fetch('http://192.168.0.128:4000/generate', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'text/plain',
+      },
+      body: input,
+    }).catch((err) => console.error(err));
+    console.log(res);
+    const jRes = await res.json();
+    const modelRes = JSON.parse(
+      jRes['candidates'][0]['content']['parts'][0]['text']
+    );
+    console.log(modelRes);
+    setVertex(modelRes['vertex']);
+    setFragment(modelRes['frag']);
+    console.log(vertex, fragment);
+  }
+
   useEffect(() => {
     const loadWasm = async () => {
       try {
@@ -77,6 +99,12 @@ function App() {
         </div>
       ) : (
         <div>
+          <input
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+          />
+          <button onClick={submit}>Submit</button>
           <WebGLScene
             key={`${vertex}-${fragment}`}
             vertShader={vertex}
