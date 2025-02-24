@@ -9,12 +9,8 @@ function App() {
   const [error, setError] = useState("");
   const [wasmReady, setWasmReady] = useState(false);
   const [tab, setTab] = useState(0);
-  const [vertex, setVertex] = useState(
-    "void main() {gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);}",
-  );
-  const [fragment, setFragment] = useState(
-    "void main() {gl_FragColor = vec4(0.0, 0.0, 1.0, 1.0);}",
-  );
+  const [vertex, setVertex] = useState("");
+  const [fragment, setFragment] = useState("");
   const [input, setInput] = useState("");
 
   async function submit() {
@@ -89,6 +85,7 @@ function App() {
             <>
               <input
                 type="text"
+                style={{ width: "50%", padding: "10px", fontSize: "1.1em" }}
                 value={expression}
                 onChange={(e) => setExpression(e.target.value)}
               />
@@ -104,10 +101,13 @@ function App() {
         <div>
           <input
             type="text"
+            placeholder="Try saying a simple red square..."
+            style={{ width: "50%", padding: "10px", fontSize: "1.1em" }}
             value={input}
             onChange={(e) => setInput(e.target.value)}
           />
           <button onClick={submit}>Submit</button>
+          <p>Responses are inaccurate for spheres and complex shapes.</p>
           <WebGLScene
             key={`${vertex}-${fragment}`}
             vertShader={vertex}
