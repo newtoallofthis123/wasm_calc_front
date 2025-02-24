@@ -108,6 +108,12 @@ function App() {
           />
           <button onClick={submit}>Submit</button>
           <p>Responses are inaccurate for spheres and complex shapes.</p>
+          <pre>
+            // Vertex:
+            {vertex}
+            // Fragment:
+            {fragment}
+          </pre>
           <WebGLScene
             key={`${vertex}-${fragment}`}
             vertShader={vertex}
