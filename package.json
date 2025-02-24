@@ -11,7 +11,10 @@
   },
   "dependencies": {
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "react-webgl": "^0.1.0",
+    "three": "^0.173.0",
+    "webgl-lite": "^0.0.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.19.0",
