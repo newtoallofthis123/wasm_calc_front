@@ -9,31 +9,26 @@ function App() {
   const [error, setError] = useState("");
   const [wasmReady, setWasmReady] = useState(false);
   const [tab, setTab] = useState(0);
-  const [vertex, setVertex] = useState("");
+  const vertex = `
+    void main() {
+      gl_Position = vec4(position, 1.0);
+    }
+  `;
   const [fragment, setFragment] = useState("");
   const [input, setInput] = useState("");
 
   async function submit() {
-    // request to "192.168.0.128/generate" with a text/plain body
-    const res = await fetch(
-      "https://wasomeback-production.up.railway.app/generate",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "text/plain",
-        },
-        body: input,
+    const res = await fetch("http://localhost:4000/generate", {
+      method: "POST",
+      headers: {
+        "Content-Type": "text/plain",
       },
-    ).catch((err) => console.error(err));
-    console.log(res);
+      body: input,
+    }).catch((err) => console.error(err));
     const jRes = await res.json();
-    const modelRes = JSON.parse(
-      jRes["candidates"][0]["content"]["parts"][0]["text"],
-    );
+    const modelRes = JSON.parse(jRes["content"][0]["text"]);
     console.log(modelRes);
-    setVertex(modelRes["vertex"]);
     setFragment(modelRes["frag"]);
-    console.log(vertex, fragment);
   }
 
   useEffect(() => {
@@ -110,15 +105,17 @@ function App() {
           <p>Responses are inaccurate for spheres and complex shapes.</p>
           <code>
             <pre>Vertex Shader:</pre>
-            {vertex}
+            <pre style={{ whiteSpace: "pre-wrap" }}>{vertex}</pre>
             <pre>Fragment Shader:</pre>
-            {fragment}
+            <pre style={{ whiteSpace: "pre-wrap" }}>{fragment}</pre>
           </code>
-          <WebGLScene
-            key={`${vertex}-${fragment}`}
-            vertShader={vertex}
-            fragShader={fragment}
-          />
+          <div>
+            <WebGLScene
+              key={`${vertex}-${fragment}`}
+              vertShader={vertex}
+              fragShader={fragment}
+            />
+          </div>
         </div>
       )}
       Made by <a href="https://noobscience.in">NoobScience</a> for InVideo
